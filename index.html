@@ -1,19 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-HK">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Starwave Dance Gala 2026</title>
-  
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dearflip-jquery-flipbook@1.2.33/dflip/css/dflip.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dearflip-jquery-flipbook@1.2.33/dflip/css/themify-icons.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    #container {
+      width: 90vw;
+      height: 90vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .page-flip-book {
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
 </head>
-<body style="margin:0; padding:0; background:#333;">
+<body>
 
-  <div class="_df_book" webgl="true" source="Program.pdf" id="df_manual_book" style="height:100vh;"></div>
+<div id="container">
+  <div id="book"></div>
+</div>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dearflip-jquery-flipbook@1.2.33/dflip/js/dflip.min.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+  const url = 'Program.pdf';
+
+  pdfjsLib.getDocument(url).promise.then(async (pdf) => {
+    const bookDiv = document.getElementById('book');
+    
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 1.5 });
+      
+      const pageDiv = document.createElement('div');
+      pageDiv.className = 'my-page';
+      
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      await page.render({ canvasContext: context, viewport: viewport }).promise;
+      pageDiv.appendChild(canvas);
+      bookDiv.appendChild(pageDiv);
+    }
+
+    const pageFlip = new St.PageFlip(bookDiv, {
+      width: 400,
+      height: 600,
+      size: "stretch",
+      minWidth: 300,
+      maxWidth: 1000,
+      minHeight: 400,
+      maxHeight: 1400,
+      maxShadowOpacity: 0.5,
+      showCover: true,
+      mobileScrollSupport: false
+    });
+
+    pageFlip.loadFromHTML(document.querySelectorAll('.my-page'));
+  });
+</script>
 
 </body>
 </html>
