@@ -1,19 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-HK">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Starwave Dance Gala 2026</title>
-  <!-- 引入 DearFlip 樣式與必備庫 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dearflip-jquery-flipbook@1.2.33/dflip/css/dflip.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dearflip-jquery-flipbook@1.2.33/dflip/css/themify-icons.min.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dearflip-jquery-flipbook@1.2.33/dflip/js/dflip.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #222;
+    }
+    .iframe-container {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
 </head>
-<body style="margin:0; padding:0; background:#333;">
+<body>
 
-  <!-- 3D 翻頁容器 -->
-  <div class="_df_book" webgl="true" source="https://emily13143344.github.io/Starwave-Dance-Gala-2026/Program.pdf" id="df_manual_book" style="height:100vh;"></div>
+  <div class="iframe-container">
+    <iframe src="https://flipbook.simpleviewinc.com/?url=https://emily13143344.github.io/Starwave-Dance-Gala-2026/Program.pdf"></iframe>
+  </div>
 
 </body>
 </html>
