@@ -2,85 +2,27 @@
 <html lang="zh-HK">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Starwave Dance Gala 2026</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.js"></script>
   <style>
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
       height: 100%;
-      background: #222;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background-color: #222;
       overflow: hidden;
     }
-    #container {
-      width: 90vw;
-      height: 90vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .page-flip-book {
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    }
-    canvas {
+    .pdf-container {
       width: 100%;
       height: 100%;
+      border: none;
     }
   </style>
 </head>
 <body>
 
-<div id="container">
-  <div id="book"></div>
-</div>
-
-<script>
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-
-  const url = 'Program.pdf';
-
-  pdfjsLib.getDocument(url).promise.then(async (pdf) => {
-    const bookDiv = document.getElementById('book');
-    
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const viewport = page.getViewport({ scale: 1.5 });
-      
-      const pageDiv = document.createElement('div');
-      pageDiv.className = 'my-page';
-      
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
-
-      await page.render({ canvasContext: context, viewport: viewport }).promise;
-      pageDiv.appendChild(canvas);
-      bookDiv.appendChild(pageDiv);
-    }
-
-    const pageFlip = new St.PageFlip(bookDiv, {
-      width: 400,
-      height: 600,
-      size: "stretch",
-      minWidth: 300,
-      maxWidth: 1000,
-      minHeight: 400,
-      maxHeight: 1400,
-      maxShadowOpacity: 0.5,
-      showCover: true,
-      mobileScrollSupport: false
-    });
-
-    pageFlip.loadFromHTML(document.querySelectorAll('.my-page'));
-  });
-</script>
+  <iframe class="pdf-container" src="https://assets.online.fliphtml5.com/web/v2/index.html?file=https://emily13143344.github.io/Starwave-Dance-Gala-2026/Program.pdf"></iframe>
 
 </body>
 </html>
