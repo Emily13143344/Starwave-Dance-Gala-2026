@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Starwave Dance Gala 2026</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
   <style>
     html, body {
       margin: 0;
@@ -11,18 +14,85 @@
       width: 100%;
       height: 100%;
       background-color: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       overflow: hidden;
     }
-    .pdf-container {
-      width: 100%;
-      height: 100%;
-      border: none;
+    #loading {
+      color: #fff;
+      font-family: sans-serif;
+      font-size: 16px;
+    }
+    #flipbook {
+      display: none;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    #flipbook .page {
+      background-color: #fff;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
     }
   </style>
 </head>
 <body>
 
-  <iframe class="pdf-container" src="https://assets.online.fliphtml5.com/web/v2/index.html?file=https://emily13143344.github.io/Starwave-Dance-Gala-2026/Program.pdf"></iframe>
+  <div id="loading">場刊載入中，請稍候...</div>
+  <div id="flipbook"></div>
+
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+    const pdfUrl = 'Program.pdf';
+    const isMobile = window.innerWidth < 768;
+
+    pdfjsLib.getDocument(pdfUrl).promise.then(async (pdf) => {
+      const container = document.getElementById('flipbook');
+      const totalPages = pdf.numPages;
+
+      // 設定頁面大小
+      const firstPage = await pdf.getPage(1);
+      const viewport = firstPage.getViewport({ scale: 1 });
+      const ratio = viewport.width / viewport.height;
+
+      let bookHeight = window.innerHeight * 0.9;
+      let bookWidth = isMobile ? bookHeight * ratio : bookHeight * ratio * 2;
+
+      if (bookWidth > window.innerWidth * 0.95) {
+        bookWidth = window.innerWidth * 0.95;
+        bookHeight = isMobile ? bookWidth / ratio : (bookWidth / 2) / ratio;
+      }
+
+      // 渲染所有 PDF 頁面為圖片
+      for (let i = 1; i <= totalPages; i++) {
+        const page = await pdf.getPage(i);
+        const pageViewport = page.getViewport({ scale: 2 });
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = pageViewport.width;
+        canvas.height = pageViewport.height;
+
+        await page.render({ canvasContext: context, viewport: pageViewport }).promise;
+
+        const pageDiv = document.createElement('div');
+        pageDiv.className = 'page';
+        pageDiv.style.backgroundImage = `url(${canvas.toDataURL('image/jpeg', 0.8)})`;
+        container.appendChild(pageDiv);
+      }
+
+      document.getElementById('loading').style.display = 'none';
+      $(container).show().turn({
+        width: bookWidth,
+        height: bookHeight,
+        autoCenter: true,
+        display: isMobile ? 'single' : 'double',
+        duration: 800
+      });
+    }).catch(err => {
+      document.getElementById('loading').innerText = '載入失敗，請重新整理頁面。';
+    });
+  </script>
 
 </body>
 </html>
